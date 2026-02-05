@@ -1,12 +1,50 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import UploadPanel from "@/components/UploadPanel";
+import AuditResults from "@/components/AuditResults";
 
 const Index = () => {
+  const [view, setView] = useState<"upload" | "results">("upload");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleRunAudit = () => {
+    setIsLoading(true);
+    // Simulate audit processing
+    setTimeout(() => {
+      setIsLoading(false);
+      setView("results");
+    }, 2000);
+  };
+
+  const handleBack = () => {
+    setView("upload");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      
+      <main className="flex min-h-screen flex-col items-center justify-center px-6 pt-14">
+        <div className="w-full py-20">
+          <div className="flex flex-col items-center">
+            {view === "upload" ? (
+              <>
+                <div className="mb-12 text-center animate-fade-in">
+                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+                    Carbon Credit Pre-Audit
+                  </h1>
+                  <p className="mt-4 text-lg text-muted-foreground">
+                    Upload your project documents for automated compliance review.
+                  </p>
+                </div>
+                <UploadPanel onRunAudit={handleRunAudit} isLoading={isLoading} />
+              </>
+            ) : (
+              <AuditResults onBack={handleBack} />
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
