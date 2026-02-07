@@ -2,22 +2,27 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import UploadPanel from "@/components/UploadPanel";
 import AuditResults from "@/components/AuditResults";
+import { analyzeDocuments, type AuditResult } from "@/lib/auditEngine";
 
 const Index = () => {
   const [view, setView] = useState<"upload" | "results">("upload");
   const [isLoading, setIsLoading] = useState(false);
+  const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
 
-  const handleRunAudit = () => {
+  const handleRunAudit = (files: File[]) => {
     setIsLoading(true);
-    // Simulate audit processing
+    // Simulate processing delay for realism
     setTimeout(() => {
+      const result = analyzeDocuments(files);
+      setAuditResult(result);
       setIsLoading(false);
       setView("results");
-    }, 2000);
+    }, 2500);
   };
 
   const handleBack = () => {
     setView("upload");
+    setAuditResult(null);
   };
 
   return (
@@ -40,7 +45,7 @@ const Index = () => {
                 <UploadPanel onRunAudit={handleRunAudit} isLoading={isLoading} />
               </>
             ) : (
-              <AuditResults onBack={handleBack} />
+              auditResult && <AuditResults result={auditResult} onBack={handleBack} />
             )}
           </div>
         </div>

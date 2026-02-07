@@ -1,27 +1,15 @@
-import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { AlertTriangle, ArrowLeft, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import IssueCard from "./IssueCard";
+import type { AuditResult } from "@/lib/auditEngine";
 
 interface AuditResultsProps {
+  result: AuditResult;
   onBack: () => void;
 }
 
-const AuditResults = ({ onBack }: AuditResultsProps) => {
-  const issues = [
-    {
-      type: "major" as const,
-      title: "Baseline Emissions Calculation Error",
-      description:
-        "The baseline emissions in Section 4.2 do not align with the methodology requirements. Recalculation needed.",
-    },
-    {
-      type: "minor" as const,
-      title: "Missing Monitoring Frequency",
-      description:
-        "The monitoring plan does not specify the frequency of data collection for parameter EF_grid.",
-    },
-  ];
-
+const AuditResults = ({ result, onBack }: AuditResultsProps) => {
+  const { issues, summary, analyzedFiles } = result;
   const majorCount = issues.filter((i) => i.type === "major").length;
   const minorCount = issues.filter((i) => i.type === "minor").length;
 
@@ -44,7 +32,7 @@ const AuditResults = ({ onBack }: AuditResultsProps) => {
         </p>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-border bg-muted/30 p-6">
+      <div className="mb-6 rounded-2xl border border-border bg-muted/30 p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-warning/10">
             <AlertTriangle className="h-6 w-6 text-warning" />
@@ -56,6 +44,19 @@ const AuditResults = ({ onBack }: AuditResultsProps) => {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="mb-8 rounded-xl border border-border bg-muted/20 p-4">
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Analyzed Files</p>
+        <div className="space-y-1">
+          {analyzedFiles.map((name, i) => (
+            <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+              <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+              {name}
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-sm text-muted-foreground">{summary}</p>
       </div>
 
       <div className="space-y-4">
