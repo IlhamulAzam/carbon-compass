@@ -2,22 +2,30 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import UploadPanel from "@/components/UploadPanel";
 import AuditResults from "@/components/AuditResults";
-import { analyzeDocuments, type AuditResult } from "@/lib/auditEngine";
+import { runAudit, type AuditResult } from "@/lib/auditEngine";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [view, setView] = useState<"upload" | "results">("upload");
   const [isLoading, setIsLoading] = useState(false);
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
 
-  const handleRunAudit = (files: File[]) => {
+  const handleRunAudit = async (files: File[]) => {
     setIsLoading(true);
-    // Simulate processing delay for realism
-    setTimeout(() => {
-      const result = analyzeDocuments(files);
+    try {
+      const result = await runAudit(files);
       setAuditResult(result);
-      setIsLoading(false);
       setView("results");
-    }, 2500);
+    } catch (error) {
+      console.error("Audit error:", error);
+      toast({
+        title: "Audit Failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {
