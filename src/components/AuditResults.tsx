@@ -66,7 +66,8 @@ const AuditResults = ({ result, onBack }: AuditResultsProps) => {
             type={issue.type}
             title={issue.title}
             description={issue.description}
-            onViewDetails={() => console.log("View details:", issue.title)}
+            section={issue.section}
+            suggestedFix={issue.suggested_fix}
           />
         ))}
       </div>
