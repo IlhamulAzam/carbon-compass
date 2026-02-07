@@ -3,7 +3,7 @@ import { Upload, FileText, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface UploadPanelProps {
-  onRunAudit: () => void;
+  onRunAudit: (files: File[]) => void;
   isLoading?: boolean;
 }
 
@@ -106,7 +106,7 @@ const UploadPanel = ({ onRunAudit, isLoading }: UploadPanelProps) => {
 
       <div className="mt-8 flex justify-center">
         <Button
-          onClick={onRunAudit}
+          onClick={() => onRunAudit(files)}
           disabled={files.length === 0 || isLoading}
           className="h-12 rounded-xl px-8 text-base font-medium shadow-soft-md transition-all hover:shadow-soft-lg disabled:opacity-40"
         >
